@@ -2,18 +2,21 @@ package br.com.elastech.ms_publicacoes.service;
 
 import br.com.elastech.ms_publicacoes.dto.request.CriarPublicacaoRequest;
 import br.com.elastech.ms_publicacoes.dto.request.EditarPublicacaoRequest;
-import br.com.elastech.ms_publicacoes.dto.response.PublicacoesResponse;
+import br.com.elastech.ms_publicacoes.dto.response.PublicacaoResponse;
 import br.com.elastech.ms_publicacoes.dto.response.CriarPublicacaoResponse;
 import br.com.elastech.ms_publicacoes.enums.ErrorEnum;
 import br.com.elastech.ms_publicacoes.enums.StatusPublicacao;
 import br.com.elastech.ms_publicacoes.exception.BaseException;
+import br.com.elastech.ms_publicacoes.mapper.requestMapper.CriarPublicacaoRequestMapper;
+import br.com.elastech.ms_publicacoes.mapper.responseMapper.CriarPublicacaoResponseMapper;
+import br.com.elastech.ms_publicacoes.mapper.responseMapper.PublicacaoResponseMapper;
 import br.com.elastech.ms_publicacoes.model.Publicacao;
 import br.com.elastech.ms_publicacoes.repository.PublicacaoRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -21,79 +24,105 @@ import java.util.List;
 public class PublicacaoService {
 
     private PublicacaoRepository repository;
+    private final CriarPublicacaoRequestMapper criarPublicacaoRequestMapper;
+    private final CriarPublicacaoResponseMapper criarPublicacaoResponseMapper;
+    private final PublicacaoResponseMapper publicacaoResponseMapper;
 
     @Transactional
     public CriarPublicacaoResponse criarPublicacao(CriarPublicacaoRequest request) {
-        if (request.conteudo().isEmpty() || request.conteudo().isBlank()) {
+
+        if (request.conteudo() == null || request.conteudo().isBlank()) {
             throw new BaseException(ErrorEnum.CONTEUDO_INVALIDO);
         }
+
         if (request.idUsuario() == null) {
             throw new BaseException(ErrorEnum.USUARIO_NAO_AUTORIZADO);
         }
 
-        repository.save(Publicacao.builder()
-                .usuarioId(request.idUsuario())
-                .conteudo(request.conteudo())
-                .imagem(request.imagem())
-                .dataAtualizacao(null)
-                .status(StatusPublicacao.PUBLICADA)
-                .comentarios(null)
-                .curtidas(null)
-                .build());
+        Publicacao publicacao = criarPublicacaoRequestMapper.map(request);
 
-        return CriarPublicacaoResponse.builder()
-                .usuarioId(request.idUsuario())
-                .conteudo(request.conteudo())
-                .imagem(request.imagem())
-                .build();
+        repository.save(publicacao);
 
+        return criarPublicacaoResponseMapper.map(publicacao);
     }
 
-    public PublicacoesResponse buscarPorId(Integer id){
-       Publicacao publicacao = repository.findById(id).orElseThrow(()-> new BaseException(ErrorEnum.PUBLICACAO_NAO_ENCONTRADA));
+    private Publicacao buscarPublicacao(Integer idPublicacao) {
+        Publicacao publicacao = repository.findById(idPublicacao)
+                .orElseThrow(() ->
+                        new BaseException(ErrorEnum.PUBLICACAO_NAO_ENCONTRADA));
 
-       if (publicacao.getStatus().equals(StatusPublicacao.ARQUIVADA) ||
-       publicacao.getStatus().equals(StatusPublicacao.EXCLUIDA)){
-           throw new BaseException(ErrorEnum.PUBLICACAO_NAO_ENCONTRADA);
-       }
+        if (publicacao.getStatus() == StatusPublicacao.EXCLUIDA) {
+            throw new BaseException(ErrorEnum.PUBLICACAO_NAO_ENCONTRADA);
+        }
 
-      return PublicacoesResponse.builder()
-              .usuarioId(publicacao.getId())
-              .conteudo(publicacao.getConteudo())
-              .imagem(publicacao.getImagem())
-              .dataCriacao(publicacao.getDataCriacao())
-              .status(publicacao.getStatus())
-              .dataAtualizacao(publicacao.getDataAtualizacao())
-              .comentarios(publicacao.getComentarios())
-              .curtidas(publicacao.getCurtidas())
-              .build();
+        return publicacao;
     }
 
-    public List<Publicacao> listarFeed(){
-        List<Publicacao> publicacoes = repository.findAll()
+    private void validarPublicacaoEditavel(Publicacao publicacao) {
+        if (publicacao.getStatus() == StatusPublicacao.ARQUIVADA) {
+            throw new BaseException(ErrorEnum.PUBLICACAO_ARQUIVADA);
+        }
+    }
+
+
+    public PublicacaoResponse buscarPorId(Integer idPublicacao) {
+        Publicacao publicacao = buscarPublicacao(idPublicacao);
+        return publicacaoResponseMapper.map(publicacao);
+    }
+
+    public List<PublicacaoResponse> listarFeed() {
+        return repository.findByStatusOrderByDataCriacaoDesc(StatusPublicacao.PUBLICADA)
                 .stream()
-                .sorted(Comparator.comparing(Publicacao::getDataCriacao).reversed())
+                .map(publicacaoResponseMapper::map)
                 .toList();
-
-        return publicacoes;
     }
 
-    public List<Publicacao> listarPorUsuario(Long usuarioId){
-        List<Publicacao> publicacoes = repository.findByUsuarioIdOrderByDataCriacaoDesc(usuarioId);
-
-        return publicacoes;
+    public List<PublicacaoResponse> listarPorUsuario(Integer usuarioId) {
+        return repository.findByUsuarioIdOrderByDataCriacaoDesc(usuarioId)
+                .stream()
+                .map(publicacaoResponseMapper::map)
+                .toList();
     }
 
     @Transactional
-    public Publicacao editar(EditarPublicacaoRequest request, Integer idPublicacao){
-        Publicacao publicacao = repository.findById(idPublicacao).orElseThrow(()->new BaseException(ErrorEnum.PUBLICACAO_NAO_ENCONTRADA));
+    public PublicacaoResponse editar(EditarPublicacaoRequest request, Integer idPublicacao) {
+        Publicacao publicacao = buscarPublicacao(idPublicacao);
 
-        if (request.conteudo()!= null){
+        validarPublicacaoEditavel(publicacao);
+
+        if (request.conteudo() != null && !request.conteudo().isBlank()) {
             publicacao.setConteudo(request.conteudo());
         }
-        if(request.imagem()!= null){
+
+        if (request.imagem() != null) {
             publicacao.setImagem(request.imagem());
         }
-        return publicacao;
+        publicacao.setDataAtualizacao(LocalDateTime.now());
+
+        return publicacaoResponseMapper.map(publicacao);
+    }
+
+    @Transactional
+    public void arquivar(Integer idPublicacao) {
+        Publicacao publicacao = buscarPublicacao(idPublicacao);
+        validarPublicacaoEditavel(publicacao);
+
+        publicacao.setStatus(StatusPublicacao.ARQUIVADA);
+    }
+
+    @Transactional
+    public void desarquivar(Integer idPublicacao){
+        Publicacao publicacao = buscarPublicacao(idPublicacao);
+        if (publicacao.getStatus() == StatusPublicacao.PUBLICADA){
+            throw new BaseException(ErrorEnum.PUBLICACAO_PUBLICADA);
+        }
+        publicacao.setStatus(StatusPublicacao.PUBLICADA);
+    }
+
+    @Transactional
+    public void excluir(Integer idPublicacao) {
+        Publicacao publicacao = buscarPublicacao(idPublicacao);
+
+        publicacao.setStatus(StatusPublicacao.EXCLUIDA);
     }
 }

@@ -4,7 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record CriarPublicacaoResponse(
-        Long usuarioId,
+        Integer usuarioId,
         String conteudo,
         String imagem
 ) {

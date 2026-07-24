@@ -1,9 +1,9 @@
 package br.com.elastech.ms_publicacoes.controller;
 
 import br.com.elastech.ms_publicacoes.dto.request.CriarPublicacaoRequest;
+import br.com.elastech.ms_publicacoes.dto.request.EditarPublicacaoRequest;
 import br.com.elastech.ms_publicacoes.dto.response.CriarPublicacaoResponse;
-import br.com.elastech.ms_publicacoes.dto.response.PublicacoesResponse;
-import br.com.elastech.ms_publicacoes.model.Publicacao;
+import br.com.elastech.ms_publicacoes.dto.response.PublicacaoResponse;
 import br.com.elastech.ms_publicacoes.service.PublicacaoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,22 +31,52 @@ public class PublicacaoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PublicacoesResponse> buscarPorId(
+    public ResponseEntity<PublicacaoResponse> buscarPorId(
             @PathVariable Integer id
     ){
         return ResponseEntity.ok(service.buscarPorId(id));
     }
 
     @GetMapping
-    public ResponseEntity<List<Publicacao>> listarFeed(){
+    public ResponseEntity<List<PublicacaoResponse>> listarFeed(){
         return ResponseEntity.ok(service.listarFeed());
     }
 
     @GetMapping("/usuario/{id}")
-    public ResponseEntity<List<Publicacao>> listarPorUsuario(
-            @PathVariable Long id
+    public ResponseEntity<List<PublicacaoResponse>> listarPorUsuario(
+            @PathVariable Integer id
     ){
         return ResponseEntity.ok(service.listarPorUsuario(id));
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<PublicacaoResponse> editar(
+            @PathVariable Integer id,
+            @RequestBody EditarPublicacaoRequest request
+    ){
+        return ResponseEntity.ok(service.editar(request,id));
+    }
+
+    @PatchMapping("/{id}/arquivar")
+    public ResponseEntity<Void> arquivar(
+            @PathVariable Integer id
+    ){
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/{id}/desarquivar")
+    public ResponseEntity<Void> desarquivar(
+            @PathVariable Integer id
+    ){
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluir(
+            @PathVariable Integer id
+    ){
+        return ResponseEntity.noContent().build();
+    }
+
 
 }
