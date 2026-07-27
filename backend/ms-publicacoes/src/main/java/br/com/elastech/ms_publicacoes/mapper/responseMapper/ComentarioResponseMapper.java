@@ -1,19 +1,20 @@
 package br.com.elastech.ms_publicacoes.mapper.responseMapper;
 
-import br.com.elastech.ms_publicacoes.dto.response.CriarComentarioResponse;
+import br.com.elastech.ms_publicacoes.dto.response.ComentarioResponse;
 import br.com.elastech.ms_publicacoes.mapper.Mapper;
 import br.com.elastech.ms_publicacoes.model.Comentario;
-import br.com.elastech.ms_publicacoes.model.Publicacao;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CriarComentarioResponseMapper implements Mapper<Comentario, CriarComentarioResponse> {
+public class ComentarioResponseMapper implements Mapper<Comentario, ComentarioResponse> {
     @Override
-    public CriarComentarioResponse map(Comentario comentario) {
-        return CriarComentarioResponse.builder()
+    public ComentarioResponse map(Comentario comentario) {
+        return ComentarioResponse.builder()
+                .id(comentario.getId())
                 .idPublicacao(comentario.getPublicacao().getId())
                 .usuarioId(comentario.getUsuarioId())
                 .conteudo(comentario.getConteudo())
+                .dataCriacao(comentario.getDataCriacao())
                 .build();
     }
 }

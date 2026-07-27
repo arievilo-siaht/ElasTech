@@ -23,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PublicacaoService {
 
-    private final PublicacaoRepository repository;
+    private final PublicacaoRepository publicacaoRepository;
     private final CriarPublicacaoRequestMapper criarPublicacaoRequestMapper;
     private final CriarPublicacaoResponseMapper criarPublicacaoResponseMapper;
     private final PublicacaoResponseMapper publicacaoResponseMapper;
@@ -41,13 +41,13 @@ public class PublicacaoService {
 
         Publicacao publicacao = criarPublicacaoRequestMapper.map(request);
 
-        repository.save(publicacao);
+        publicacaoRepository.save(publicacao);
 
         return criarPublicacaoResponseMapper.map(publicacao);
     }
 
     private Publicacao buscarPublicacao(Integer idPublicacao) {
-        Publicacao publicacao = repository.findById(idPublicacao)
+        Publicacao publicacao = publicacaoRepository.findById(idPublicacao)
                 .orElseThrow(() ->
                         new BaseException(ErrorEnum.PUBLICACAO_NAO_ENCONTRADA));
 
@@ -71,14 +71,14 @@ public class PublicacaoService {
     }
 
     public List<PublicacaoResponse> listarFeed() {
-        return repository.findByStatusOrderByDataCriacaoDesc(StatusPublicacao.PUBLICADA)
+        return publicacaoRepository.findByStatusOrderByDataCriacaoDesc(StatusPublicacao.PUBLICADA)
                 .stream()
                 .map(publicacaoResponseMapper::map)
                 .toList();
     }
 
     public List<PublicacaoResponse> listarPorUsuario(Integer usuarioId) {
-        return repository.findByUsuarioIdOrderByDataCriacaoDesc(usuarioId)
+        return publicacaoRepository.findByUsuarioIdOrderByDataCriacaoDesc(usuarioId)
                 .stream()
                 .map(publicacaoResponseMapper::map)
                 .toList();
