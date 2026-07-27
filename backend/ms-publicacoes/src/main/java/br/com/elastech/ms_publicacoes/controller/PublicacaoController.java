@@ -17,7 +17,7 @@ import java.util.List;
 @RequestMapping("/publicacao")
 public class PublicacaoController {
 
-    private PublicacaoService service;
+    private final PublicacaoService service;
 
     @PostMapping
     public ResponseEntity<CriarPublicacaoResponse> criar(
@@ -61,6 +61,7 @@ public class PublicacaoController {
     public ResponseEntity<Void> arquivar(
             @PathVariable Integer id
     ){
+        service.arquivar(id);
         return ResponseEntity.ok().build();
     }
 
@@ -68,6 +69,7 @@ public class PublicacaoController {
     public ResponseEntity<Void> desarquivar(
             @PathVariable Integer id
     ){
+        service.desarquivar(id);
         return ResponseEntity.ok().build();
     }
 
@@ -75,6 +77,7 @@ public class PublicacaoController {
     public ResponseEntity<Void> excluir(
             @PathVariable Integer id
     ){
+        service.excluir(id);
         return ResponseEntity.noContent().build();
     }
 

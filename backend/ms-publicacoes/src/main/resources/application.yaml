@@ -3,7 +3,7 @@ spring:
     name: elas_tech
 
   datasource:
-    url: jdbc:mysql://localhost:3306/db_elas_tech
+    url: jdbc:mysql://localhost:3306/db_elas_tech?createDatabaseIfNotExist=true&serverTimezone=America/Sao_Paulo
     username: root
     password: aluno1234
     driver-class-name: com.mysql.cj.jdbc.Driver

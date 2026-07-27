@@ -23,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PublicacaoService {
 
-    private PublicacaoRepository repository;
+    private final PublicacaoRepository repository;
     private final CriarPublicacaoRequestMapper criarPublicacaoRequestMapper;
     private final CriarPublicacaoResponseMapper criarPublicacaoResponseMapper;
     private final PublicacaoResponseMapper publicacaoResponseMapper;
