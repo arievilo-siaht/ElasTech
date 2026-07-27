@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
-public record PublicacoesResponse(
+public record PublicacaoResponse(
         Integer usuarioId,
         String conteudo,
         String imagem,

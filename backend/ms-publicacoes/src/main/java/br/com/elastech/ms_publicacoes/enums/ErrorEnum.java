@@ -7,22 +7,32 @@ import org.springframework.http.HttpStatus;
 public enum ErrorEnum {
     PUBLICACAO_NAO_ENCONTRADA(
             "001",
-            "Publicacão não encontrada",
+            "Publicacão não encontrada.",
             HttpStatus.NOT_FOUND
     ),
     USUARIO_NAO_AUTORIZADO(
             "002",
-            "Usuario não autorizado",
+            "Usuario não autorizado.",
             HttpStatus.UNAUTHORIZED
     ),
     CONTEUDO_INVALIDO(
             "003",
-            "Contéudo não pode ser vazio",
+            "Contéudo não pode ser vazio.",
             HttpStatus.BAD_REQUEST
 
     ),
-    ERRO_INTERNO(
+    PUBLICACAO_ARQUIVADA(
             "004",
+            "Publicação ja está arquivada.",
+            HttpStatus.BAD_REQUEST
+    ),
+    PUBLICACAO_PUBLICADA(
+            "005",
+            "Publicação ja está publicada.",
+            HttpStatus.BAD_REQUEST
+    ),
+    ERRO_INTERNO(
+            "006",
             "Ocorreu um erro interno no servidor. Tente novamente mais tarde.",
             HttpStatus.INTERNAL_SERVER_ERROR
     );

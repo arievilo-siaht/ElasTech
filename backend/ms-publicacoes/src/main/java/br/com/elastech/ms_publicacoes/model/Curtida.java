@@ -5,7 +5,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
-@Entity
+@Entity(name = "curtidas")
 @Table(
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"publicacao_id", "usuario_id"})
