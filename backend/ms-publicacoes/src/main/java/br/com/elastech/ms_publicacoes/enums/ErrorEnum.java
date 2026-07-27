@@ -31,8 +31,13 @@ public enum ErrorEnum {
             "Publicação ja está publicada.",
             HttpStatus.BAD_REQUEST
     ),
-    ERRO_INTERNO(
+    COMENTARIO_NAO_ENCONTRADO(
             "006",
+            "Comentário não encontrado",
+            HttpStatus.NOT_FOUND
+    ),
+    ERRO_INTERNO(
+            "007",
             "Ocorreu um erro interno no servidor. Tente novamente mais tarde.",
             HttpStatus.INTERNAL_SERVER_ERROR
     );

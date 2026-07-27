@@ -11,4 +11,5 @@ import java.util.List;
 public interface PublicacaoRepository extends JpaRepository<Publicacao, Integer> {
     List<Publicacao> findByUsuarioIdOrderByDataCriacaoDesc(Integer usuarioId);
     List<Publicacao> findByStatusOrderByDataCriacaoDesc(StatusPublicacao status);
+
 }
