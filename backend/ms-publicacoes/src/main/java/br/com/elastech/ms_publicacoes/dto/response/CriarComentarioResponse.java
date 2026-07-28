@@ -5,7 +5,6 @@ import lombok.Builder;
 
 @Builder
 public record CriarComentarioResponse(
-        Integer idPublicacao,
         Integer usuarioId,
         String conteudo
 ) {
