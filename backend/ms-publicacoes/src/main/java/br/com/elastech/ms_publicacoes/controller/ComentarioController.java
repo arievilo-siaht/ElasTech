@@ -16,23 +16,24 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/comentario")
+@RequestMapping("/comentarios")
 public class ComentarioController {
 
     private final ComentarioService comentarioService;
 
     @PostMapping
     public ResponseEntity<CriarComentarioResponse> criar(
+            @PathVariable Integer idPublicacao,
             @RequestBody CriarComentarioRequest request
     ) {
-        CriarComentarioResponse response = comentarioService.criar(request);
+        CriarComentarioResponse response = comentarioService.criar(request, idPublicacao);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(response);
     }
 
-    @GetMapping("/{idPublicacao}")
+    @GetMapping("/publicacao/{idPublicacao}")
     public ResponseEntity<List<ComentarioResponse>> listarComentariosPorPublicacao(
             @PathVariable Integer idPublicacao
     ) {

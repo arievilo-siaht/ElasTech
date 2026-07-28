@@ -32,14 +32,14 @@ public class ComentarioService {
     private final ComentarioResponseMapper comentarioResponseMapper;
 
     @Transactional
-    public CriarComentarioResponse criar(CriarComentarioRequest request) {
+    public CriarComentarioResponse criar(CriarComentarioRequest request, Integer idPublicacao) {
         if (request.conteudo() == null || request.conteudo().isBlank()) {
             throw new BaseException(ErrorEnum.CONTEUDO_INVALIDO);
         }
         if (request.idUsuario() == null) {
             throw new BaseException(ErrorEnum.USUARIO_NAO_AUTORIZADO);
         }
-        Publicacao publicacao = buscarPublicacao(request.idPublicacao());
+        Publicacao publicacao = buscarPublicacao(idPublicacao);
         validarStatusPublicacao(publicacao);
         Comentario comentario = criarComentarioRequestMapper.map(request);
         comentario.setPublicacao(publicacao);

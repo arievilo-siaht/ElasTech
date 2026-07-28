@@ -1,10 +1,15 @@
 package br.com.elastech.ms_publicacoes.model;
 
 import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
-
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "curtidas")
 @Table(
         uniqueConstraints = {
@@ -26,4 +31,7 @@ public class Curtida {
     @CreationTimestamp
     @Column(name = "data_curtida")
     private LocalDateTime dataCurtida;
+
+    @Column
+    private boolean ativo;
 }

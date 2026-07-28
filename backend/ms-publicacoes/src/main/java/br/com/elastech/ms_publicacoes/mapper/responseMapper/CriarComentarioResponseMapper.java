@@ -11,7 +11,6 @@ public class CriarComentarioResponseMapper implements Mapper<Comentario, CriarCo
     @Override
     public CriarComentarioResponse map(Comentario comentario) {
         return CriarComentarioResponse.builder()
-                .idPublicacao(comentario.getPublicacao().getId())
                 .usuarioId(comentario.getUsuarioId())
                 .conteudo(comentario.getConteudo())
                 .build();
