@@ -1,4 +1,4 @@
-package br.com.elastech.ms_publicacoes.exception;
+package br.com.elastech.ms_chat.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,5 +13,4 @@ public class ErrorResponse {
     private String message;
     private int status;
     private String path;
-
 }
