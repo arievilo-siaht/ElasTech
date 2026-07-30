@@ -1,5 +1,6 @@
 package br.com.elastech.ms_usuarios.controller;
 
+import br.com.elastech.ms_usuarios.dto.internal.UsuarioAuthResponse;
 import br.com.elastech.ms_usuarios.dto.request.AtualizarUsuarioRequest;
 import br.com.elastech.ms_usuarios.dto.request.CriarUsuarioRequest;
 import br.com.elastech.ms_usuarios.dto.response.UsuarioResponse;
@@ -27,7 +28,7 @@ public class UsuarioController {
     private ResponseEntity<Void> create(
             @RequestBody CriarUsuarioRequest usuarioRequest
     ) {
-        Usuario usuario = usuarioService.create(usuarioRequest);
+        usuarioService.create(usuarioRequest);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -57,6 +58,23 @@ public class UsuarioController {
         return ResponseEntity
                 .ok()
                 .body(listaUsuarioResponse);
+    }
+
+    @GetMapping("/usuarios/{username}")
+    private ResponseEntity<UsuarioAuthResponse> findByUsername(
+            @PathVariable String username
+    ) {
+        Usuario usuario = usuarioService.findByUsername(username);
+
+        return ResponseEntity
+                .ok()
+                .body(new UsuarioAuthResponse(
+                        usuario.getId(),
+                        usuario.getUsername(),
+                        usuario.getAtivo(),
+                        usuario.getSenhaHash(),
+                        usuario.getRoles())
+                );
     }
 
     @PatchMapping("/{id}")

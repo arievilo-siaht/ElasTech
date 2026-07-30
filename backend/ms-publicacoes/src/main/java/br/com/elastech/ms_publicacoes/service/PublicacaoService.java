@@ -29,19 +29,17 @@ public class PublicacaoService {
     private final PublicacaoResponseMapper publicacaoResponseMapper;
 
     @Transactional
-    public CriarPublicacaoResponse criarPublicacao(CriarPublicacaoRequest request) {
+    public CriarPublicacaoResponse criarPublicacao(CriarPublicacaoRequest request, Integer idUsuario) {
 
         if (request.conteudo() == null || request.conteudo().isBlank()) {
             throw new BaseException(ErrorEnum.CONTEUDO_INVALIDO);
         }
 
-        if (request.idUsuario() == null) {
-            throw new BaseException(ErrorEnum.USUARIO_NAO_AUTORIZADO);
-        }
-
         Publicacao publicacao = criarPublicacaoRequestMapper.map(request);
 
-        publicacaoRepository.save(publicacao);
+        publicacao.setUsuarioId(idUsuario);
+
+        repository.save(publicacao);
 
         return criarPublicacaoResponseMapper.map(publicacao);
     }

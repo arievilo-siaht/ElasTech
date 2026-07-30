@@ -8,6 +8,6 @@ public record CriarUsuarioRequest(
         String telefone,
         LocalDate dataNascimento,
         String email,
-        LocalDate dataCadastro
+        String senha
 ) {
 }

@@ -11,7 +11,6 @@ public class CriarPublicacaoRequestMapper implements Mapper<CriarPublicacaoReque
     @Override
     public Publicacao map(CriarPublicacaoRequest criarPublicacaoRequest) {
         return Publicacao.builder()
-                .usuarioId(criarPublicacaoRequest.idUsuario())
                 .conteudo(criarPublicacaoRequest.conteudo())
                 .imagem(criarPublicacaoRequest.imagem())
                 .dataAtualizacao(null)

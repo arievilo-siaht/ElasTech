@@ -4,9 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record CriarPublicacaoRequest(
-        Integer idUsuario,
         String conteudo,
         String imagem
-
 ) {
 }
