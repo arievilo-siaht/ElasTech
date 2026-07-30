@@ -8,6 +8,8 @@ import br.com.elastech.ms_publicacoes.service.PublicacaoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,9 +23,14 @@ public class PublicacaoController {
 
     @PostMapping
     public ResponseEntity<CriarPublicacaoResponse> criar(
-            @RequestBody CriarPublicacaoRequest request
+            @RequestBody CriarPublicacaoRequest request,
+            Authentication authentication
     ) {
-        CriarPublicacaoResponse response = service.criarPublicacao(request);
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+
+        Integer idUsuario = Integer.valueOf(jwt.getSubject());
+
+        CriarPublicacaoResponse response = service.criarPublicacao(request, idUsuario);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)

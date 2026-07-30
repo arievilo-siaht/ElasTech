@@ -3,21 +3,26 @@ package br.com.elastech.ms_usuarios.service;
 import br.com.elastech.ms_usuarios.dto.request.AtualizarUsuarioRequest;
 import br.com.elastech.ms_usuarios.dto.request.CriarUsuarioRequest;
 import br.com.elastech.ms_usuarios.entities.Usuario;
+import br.com.elastech.ms_usuarios.enums.Role;
 import br.com.elastech.ms_usuarios.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 @Service
 public class UsuarioService {
     @Autowired
     private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UsuarioService(UsuarioRepository usuarioRepository) {
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
@@ -29,6 +34,8 @@ public class UsuarioService {
                 .telefone(criarUsuarioRequest.telefone())
                 .dataNascimento(criarUsuarioRequest.dataNascimento())
                 .email(criarUsuarioRequest.email())
+                .senhaHash(passwordEncoder.encode(criarUsuarioRequest.senha()))
+                .roles(Collections.singleton(Role.USER))
                 .dataCadastro(LocalDate.now())
                 .ativo(true)
                 .build();
@@ -75,5 +82,13 @@ public class UsuarioService {
         usuario.setAtivo(false);
 
         usuarioRepository.save(usuario);
+    }
+
+    public Usuario findByUsername(String username) {
+        Usuario usuario = usuarioRepository
+                .findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Usuário inexistente."));
+
+        return usuario;
     }
 }
