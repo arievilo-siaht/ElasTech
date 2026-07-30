@@ -1,15 +1,15 @@
 package br.com.elastech.ms_publicacoes.model;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "comentarios")
 public class Comentario {
     @Id
@@ -29,4 +29,7 @@ public class Comentario {
     @CreationTimestamp
     @Column(name = "data_criacao")
     private LocalDateTime dataCriacao;
+
+    @Column(name = "ativo")
+    private boolean ativo = true;
 }

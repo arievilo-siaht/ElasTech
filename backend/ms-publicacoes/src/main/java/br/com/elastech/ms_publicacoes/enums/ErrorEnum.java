@@ -1,6 +1,7 @@
 package br.com.elastech.ms_publicacoes.enums;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
 @Getter
@@ -31,8 +32,23 @@ public enum ErrorEnum {
             "Publicação ja está publicada.",
             HttpStatus.BAD_REQUEST
     ),
-    ERRO_INTERNO(
+    COMENTARIO_NAO_ENCONTRADO(
             "006",
+            "Comentário não encontrado",
+            HttpStatus.NOT_FOUND
+    ),
+    CURTIDA_NAO_ENCONTRADA(
+            "007",
+            "Você ainda não curtiu esse post",
+            HttpStatus.NOT_FOUND
+    ),
+    PUBLICACAO_JA_CURTIDA(
+            "008",
+            "Publicacão ja foi curtida",
+            HttpStatus.BAD_REQUEST
+    ),
+    ERRO_INTERNO(
+            "008",
             "Ocorreu um erro interno no servidor. Tente novamente mais tarde.",
             HttpStatus.INTERNAL_SERVER_ERROR
     );
@@ -46,4 +62,5 @@ public enum ErrorEnum {
         this.errorMessage = errorMessage;
         this.httpStatus = httpStatus;
     }
+
 }
